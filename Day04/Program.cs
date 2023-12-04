@@ -35,7 +35,7 @@ foreach (var line in input)
     var wcn = winning.Intersect(mine).Count();
     for (long i = 0; i < wcn; i++)
     {
-        if (lc + 1 + 1 < cardNums.Count)
+        if (lc + i + 1 < cardNums.Count)
             cardNums[lc + i + 1] += cardNums[lc];
     }
     lc++;
