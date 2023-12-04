@@ -42,5 +42,4 @@ foreach (var line in input)
 }
 
 var ret2 = cardNums.Sum(k => k.Value);
-//9342307
 Console.ReadLine();
