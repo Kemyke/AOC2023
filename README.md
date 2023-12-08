@@ -7,3 +7,13 @@ Day 1: more complicated than previous years but I am kinda proud of my simple pa
 Day 2: now I see more simplier ways to solve it but it was easier than Day 1
 
 Day 3: maps are here again, my code is awful
+
+Day 4: 
+
+Day 5: Part2 might be not complete however it works for my input.
+
+Day 6: Without any optimization the code runs fast
+
+Day 7: Some tricks to simplify code (character replacement) 
+
+Day 8: Part 2 was solved by hand and with an online LCM multiplier. But I commited a working solution.
