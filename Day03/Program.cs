@@ -1,28 +1,28 @@
-﻿using Day03;
+﻿using AOCHelper;
 
 var input = File.ReadAllLines("input.txt");
-var parsedInput = Helper.ParseInputWithPadding(input.ToList(), new Item { ValueCh = '.', ValueStr = ".", GearNum = 0, GearValue = 1 });
+var parsedInput = Helper.ParseInput(Helper.PadInput(input.ToList(), '.'));
 
 long ret1 = 0;
 
-for (int i = 0; i < input.Length; i++)
+for (int i = 1; i < parsedInput.Count; i++)
 {
-    string line = input[i];
     string num = "";
     bool adj = false;
     List<Item> staradj = new List<Item>();
-    for(int j=0 ; j < line.Length; j++)
+    for(int j=1 ; j < parsedInput[i].Count; j++)
     {
-        var c = line[j];
+        var c = parsedInput[i][j].ValueCh;
         if(char.IsNumber(c))
         {
             num += c;
             if(!adj)
             {
-                adj = Helper.AdjacentAndDiag(parsedInput, i, j).Where(it => it.ValueCh != '.' && !char.IsNumber(it.ValueCh)).Any();
+                var x = Helper.AdjacentAndDiagItems(parsedInput, i, j);
+                adj = x.Where(it => it.ValueCh != '.' && !char.IsNumber(it.ValueCh)).Any();
             }
 
-            foreach (var sa in Helper.AdjacentAndDiag(parsedInput, i, j).Where(it => it.ValueCh == '*'))
+            foreach (var sa in Helper.AdjacentAndDiagItems(parsedInput, i, j).Where(it => it.ValueCh == '*'))
             {
                 if(!staradj.Contains(sa))
                 {

@@ -4,88 +4,122 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Day03
+namespace AOCHelper
 {
-    public class Item
+    public class Coordinate
     {
-        public char ValueCh { get; set; }
-        public string ValueStr { get; set; }
-        
-        public Item Clone()
+        public long X { get; set; }
+        public long Y { get; set; }
+
+        public List<Coordinate> Adjacent()
         {
-            return new Item { ValueCh = ValueCh, ValueStr = ValueStr, GearNum = GearNum, GearValue = GearValue };
+            List<Coordinate> ret =
+            [
+                new Coordinate { Y = Y - 1, X = X },
+                new Coordinate { Y = Y, X = X - 1 },
+                new Coordinate { Y = Y, X = X + 1 },
+                new Coordinate { Y = Y + 1, X = X },
+            ];
+
+            return ret;
         }
 
+        public List<Coordinate> AdjacentAndDiag()
+        {
+            List<Coordinate> ret =
+            [
+                new Coordinate { Y = Y - 1, X = X },
+                new Coordinate { Y = Y, X = X - 1 },
+                new Coordinate { Y = Y, X = X + 1 },
+                new Coordinate { Y = Y + 1, X = X },
+
+                new Coordinate { Y = Y - 1, X = X - 1 },
+                new Coordinate { Y = Y - 1, X = X + 1 },
+                new Coordinate { Y = Y + 1, X = X - 1 },
+                new Coordinate { Y = Y + 1, X = X + 1 },
+
+            ];
+
+            return ret;
+        }
+    }
+    public class Item
+    {
+        public uint DijkstraId { get; set; }
+        public Coordinate Coordinate { get; set; }
+        public char ValueCh { get; set; }
+        public string ValueStr { get; set; }
         public int GearNum { get; set; } = 0;
         public long GearValue { get; set; } = 1;
+
+        public Item Clone()
+        {
+            return new Item { Coordinate = new Coordinate { X = Coordinate.X, Y = Coordinate.Y }, ValueCh = ValueCh, ValueStr = ValueStr };
+        }
     }
 
     public class Helper
     {
-        public static Dictionary<int, Dictionary<int, Item>> ParseInput(List<string> input)
+        public static Dictionary<long, Dictionary<long, Item>> ParseInput(List<string> input)
         {
-            var ret = new Dictionary<int, Dictionary<int, Item>>();
+            var ret = new Dictionary<long, Dictionary<long, Item>>();
             var c = input[0].Length;
             for (int i = 0; i < input.Count; i++)
             {
-                ret.Add(i, new Dictionary<int, Item>());
+                ret.Add(i, new Dictionary<long, Item>());
                 for (int j = 0; j < c; j++)
                 {
-                    ret[i].Add(j, new Item { ValueCh = input[i][j], ValueStr = input[i][j].ToString() });
+                    var item = new Item { Coordinate = new Coordinate { X = j, Y = i }, ValueCh = input[i][j], ValueStr = input[i][j].ToString() };
+                    ret[i].Add(j, item);
                 }
             }
 
             return ret;
         }
 
-        public static Dictionary<int, Dictionary<int, Item>> ParseInputWithPadding(List<string> input, Item padItem)
+        public static List<string> PadInput(List<string> input, char padCh)
         {
-            var ret = ParseInput(input);
+            var ret = input.ToList();
             var c = input[0].Length;
-            ret.Add(-1, new Dictionary<int, Item>());
-            ret.Add(input.Count, new Dictionary<int, Item>());
-            for(int i = -1; i < c + 1; i++)
+            for (int i = 0; i < c; i++)
             {
-                ret[-1].Add(i, padItem.Clone());
-                ret[input.Count].Add(i, padItem.Clone());
+                ret[i] = padCh.ToString() + input[i] + padCh.ToString();
+                
             }
-
-            for(int i=0; i < input.Count; i++)
-            {
-                ret[i].Add(-1, padItem.Clone());
-                ret[i].Add(c, padItem.Clone());
-            }
-
+            ret.Insert(0, new string(Enumerable.Range(0, c + 2).Select(_ => padCh).ToArray()));
+            ret.Add(new string(Enumerable.Range(0, c + 2).Select(_ => padCh).ToArray()));
             return ret;
         }
 
-        public static List<Item> Adjacent(Dictionary<int, Dictionary<int, Item>> items, int line, int pos)
+        public static List<Item> AdjacentItems(Dictionary<long, Dictionary<long, Item>> map, int y, int x)
         {
-            List<Item> ret =
-            [
-                items[line - 1][pos],
-                items[line][pos - 1],
-                items[line][pos + 1],
-                items[line + 1][pos],
-            ];
+            return AdjacentItems(map, map[y][x]);
+        }
 
+        public static List<Item> AdjacentItems(Dictionary<long, Dictionary<long, Item>> map, Item item)
+        {
+            List<Item> ret = new List<Item>();
+            foreach (var c in item.Coordinate.Adjacent())
+            {
+                if (map.ContainsKey(c.Y) && map[c.Y].ContainsKey(c.X))
+                    ret.Add(map[c.Y][c.X]);
+            }
             return ret;
         }
 
-        public static List<Item> AdjacentAndDiag(Dictionary<int, Dictionary<int, Item>> items, int line, int pos)
+        public static List<Item> AdjacentAndDiagItems(Dictionary<long, Dictionary<long, Item>> map, int y, int x)
         {
-            List<Item> ret =
-            [
-                items[line - 1][pos - 1],
-                items[line - 1][pos],
-                items[line - 1][pos + 1],
-                items[line][pos - 1],
-                items[line][pos + 1],
-                items[line + 1][pos - 1],
-                items[line + 1][pos],
-                items[line + 1][pos + 1],
-            ];
+            return AdjacentAndDiagItems(map, map[y][x]);
+        }
 
+        public static List<Item> AdjacentAndDiagItems(Dictionary<long, Dictionary<long, Item>> map, Item item)
+        {
+            List<Item> ret = new List<Item>();
+            foreach (var c in item.Coordinate.AdjacentAndDiag())
+            {
+                if (map.ContainsKey(c.Y) && map[c.Y].ContainsKey(c.X))
+                    ret.Add(map[c.Y][c.X]);
+            }
             return ret;
         }
     }
