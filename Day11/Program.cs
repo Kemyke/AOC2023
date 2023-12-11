@@ -31,6 +31,7 @@ for(int i = 0; i < galaxies.Count - 1; i++)
 {
     var g1 = galaxies[i];
 
+
     for (int j = i + 1; j < galaxies.Count; j++)
     {
         var g2 = galaxies[j];
