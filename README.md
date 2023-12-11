@@ -17,3 +17,9 @@ Day 6: Without any optimization the code runs fast
 Day 7: Some tricks to simplify code (character replacement) 
 
 Day 8: Part 2 was solved by hand and with an online LCM multiplier. But I commited a working solution.
+
+Day 9: easy day, like derivation
+
+Day 10: Interesting challenge, pipes needed some hand drawing to figure out how to count intersections
+
+Day 11: Overcomplicate, wait too much to a slow solution then rewrite it in minutes
