@@ -1,12 +1,4 @@
-﻿using Dijkstra.NET.ShortestPath;
-using MathNet.Numerics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AOCHelper
+﻿namespace AOCHelper
 {
     public class Coordinate
     {
@@ -60,6 +52,23 @@ namespace AOCHelper
 
     public class Helper
     {
+        public static List<string> RotateStringList(List<string> input)
+        {
+            var rowLength = input[0].Length;
+            if(!input.All(l=>l.Length == rowLength))
+            {
+                throw new Exception();
+            }
+
+            var ret = new List<string>(rowLength);
+            for(var i = 0; i < rowLength; i++)
+            {
+                ret.Add(new string(input.Select(l => l[i]).ToArray()));
+            }
+
+            return ret;
+        }
+
         public static Dictionary<long, Dictionary<long, Item>> ParseInput(List<string> input)
         {
             var ret = new Dictionary<long, Dictionary<long, Item>>();
@@ -161,6 +170,28 @@ namespace AOCHelper
                     ret.Add(map[c.Y][c.X]);
             }
             return ret;
+        }
+
+        public static void VisualizeStringList(List<string> input)
+        {
+            foreach (var l in input)
+            {
+                Console.WriteLine(l);
+            }
+            Console.WriteLine();
+        }
+
+        public static void VisualizeMap(Dictionary<long, Dictionary<long, Item>> map)
+        {
+            foreach (var y in map)
+            {
+                foreach (var x in y.Value)
+                {
+                    Console.Write(x.Value.ValueCh);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
     }
 }
