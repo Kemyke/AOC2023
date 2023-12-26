@@ -7,6 +7,18 @@ namespace AOCHelper
         public long X { get; set; }
         public long Y { get; set; }
 
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + X.GetHashCode();
+                hash = hash * 23 + Y.GetHashCode();
+                return hash;
+            }
+        }
+
         public List<Coordinate> Adjacent()
         {
             List<Coordinate> ret =
@@ -224,40 +236,40 @@ namespace AOCHelper
 
                 foreach (var x in y.Value.OrderBy(k=>k.Key))
                 {
-                    if(x.Value.Coordinate.X > maxx && x.Value.Coordinate.Y < maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y][x.Value.Coordinate.X - maxx].DistFromStart - x.Value.DistFromStart);
-                    }
-                    else if(x.Value.Coordinate.X < maxx && x.Value.Coordinate.Y > maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y - maxy][x.Value.Coordinate.X].DistFromStart - x.Value.DistFromStart);
-                    }
-                    else if (x.Value.Coordinate.X > maxx && x.Value.Coordinate.Y > maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y - maxy][x.Value.Coordinate.X - maxx].DistFromStart - x.Value.DistFromStart);
-                    }
-                    
-                    else if (x.Value.Coordinate.X < -maxx && x.Value.Coordinate.Y > -maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y][x.Value.Coordinate.X + maxx].DistFromStart - x.Value.DistFromStart);
-                    }
-                    else if (x.Value.Coordinate.X > -maxx && x.Value.Coordinate.Y < -maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y + maxy][x.Value.Coordinate.X].DistFromStart - x.Value.DistFromStart);
-                    }
-                    else if (x.Value.Coordinate.X < -maxx && x.Value.Coordinate.Y < -maxy)
-                    {
-                        p.Add(map[x.Value.Coordinate.Y + maxy][x.Value.Coordinate.X + maxx].DistFromStart - x.Value.DistFromStart);
-                    }
-                    else
-                    {
-                        p.Add("X");
-                    }
+                    //if(x.Value.Coordinate.X > maxx && x.Value.Coordinate.Y < maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y][x.Value.Coordinate.X - maxx].DistFromStart - x.Value.DistFromStart);
+                    //}
+                    //else if(x.Value.Coordinate.X < maxx && x.Value.Coordinate.Y > maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y - maxy][x.Value.Coordinate.X].DistFromStart - x.Value.DistFromStart);
+                    //}
+                    //else if (x.Value.Coordinate.X > maxx && x.Value.Coordinate.Y > maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y - maxy][x.Value.Coordinate.X - maxx].DistFromStart - x.Value.DistFromStart);
+                    //}
 
-                    //if (x.Value.DistFromStart != null)
-                    //    p.Add(x.Value.DistFromStart);
+                    //else if (x.Value.Coordinate.X < -maxx && x.Value.Coordinate.Y > -maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y][x.Value.Coordinate.X + maxx].DistFromStart - x.Value.DistFromStart);
+                    //}
+                    //else if (x.Value.Coordinate.X > -maxx && x.Value.Coordinate.Y < -maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y + maxy][x.Value.Coordinate.X].DistFromStart - x.Value.DistFromStart);
+                    //}
+                    //else if (x.Value.Coordinate.X < -maxx && x.Value.Coordinate.Y < -maxy)
+                    //{
+                    //    p.Add(map[x.Value.Coordinate.Y + maxy][x.Value.Coordinate.X + maxx].DistFromStart - x.Value.DistFromStart);
+                    //}
                     //else
-                    //    p.Add(x.Value.ValueCh);
+                    //{
+                    //    p.Add("X");
+                    //}
+
+                    if (x.Value.DistFromStart != null)
+                        p.Add(x.Value.DistFromStart);
+                    else
+                        p.Add(x.Value.ValueCh);
                 }
                 sb.AppendLine(string.Format(formatStr, p.ToArray()));
             }

@@ -1,134 +1,69 @@
 ﻿using AOCHelper;
-using System.ComponentModel;
-using System.Data;
-var s = String.Format("|{0,5}|{1,5}|{2,5}", new List<object> { 1, "#", 300 }.ToArray());
-
-//var t = Predict(new List<long> { 3819, 33769, 94549, 184399, 305959 });
-305959
 
 var input = File.ReadAllLines("input.txt").ToList();
-var biginput = new List<string>();
-foreach(var l in input)
-{
-    var rl = l.Replace("S", ".");
-    biginput.Add(rl + rl + rl + rl + rl + rl + rl + rl + rl + rl + rl);
-}
-
-biginput = biginput.Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).Concat(biginput).ToList();
-
-var map = Helper.ParseInput(biginput);
-
-var orig = Helper.ParseInput(input);
-var origStart = orig.SelectMany(kvp => kvp.Value.Values).Single(i => i.ValueCh == 'S').Coordinate;
-var sx = 5 * 131 + origStart.X;
-var sy = 5 * 131 + origStart.Y;
+var map = Helper.ParseInput(input);
+map[65][65].ValueCh = '.';
 
 var allTiles = map.SelectMany(kvp => kvp.Value.Values).ToList();
-var start = allTiles.Single(i => i.Coordinate.X == sx && i.Coordinate.Y == sy);
-start.ValueCh = 'S';
-Helper.VisualizeMapFile(map);
-var startingPos = start.Coordinate;
-start.ValueCh = '.';
-start.DistFromStart = 0;
 
-//for (int i = 1; i < 5; i++)
-//{
-//    AddNewPart(-i, -i, map, orig);
-//    AddNewPart(i, i, map, orig);
-//    AddNewPart(i, -i, map, orig);
-//    AddNewPart(-i, i, map, orig);
-//    var d = 1;
-//    for(int j = -i + 1; j < i; j++)
-//    {
-//        AddNewPart(-i, -i + d, map, orig);
-//        AddNewPart(i, -i + d, map, orig);
+Fill(map, allTiles, new Coordinate { X = 65, Y = 65 });
+var fullTableParity0 = allTiles.Count(t => t.DistFromStart % 2 == 0);
+var fullTableParity1 = allTiles.Count(t => t.DistFromStart % 2 == 1);
 
-//        AddNewPart(-i + d, -i, map, orig);
-//        AddNewPart(-i + d, i, map, orig);
-//        d++;
-//    }
-//}
-//allTiles = map.SelectMany(kvp => kvp.Value.Values).ToList();
+Fill(map, allTiles, new Coordinate { X = 65, Y = 130 });
+var up = allTiles.Count(t => t.DistFromStart < 131 && t.DistFromStart % 2 == 0);
+Fill(map, allTiles, new Coordinate { X = 65, Y = 0 });
+var down = allTiles.Count(t => t.DistFromStart < 131 && t.DistFromStart % 2 == 0);
+Fill(map, allTiles, new Coordinate { X = 130, Y = 65 });
+var left = allTiles.Count(t => t.DistFromStart < 131 && t.DistFromStart % 2 == 0);
+Fill(map, allTiles, new Coordinate { X = 0, Y = 65 });
+var right = allTiles.Count(t => t.DistFromStart < 131 && t.DistFromStart % 2 == 0);
 
-Fill(map, allTiles);
-Helper.VisualizeMapInFile(map, 131, 131);
-var rts1 = allTiles.Count(t => t.DistFromStart % 2 == 1 && t.DistFromStart <= 65);
-var rts2 = allTiles.Count(t => t.DistFromStart % 2 == 1 && t.DistFromStart <= 196);
-var rts3 = allTiles.Count(t => t.DistFromStart % 2 == 1 && t.DistFromStart <= 327);
-var rts4 = allTiles.Count(t => t.DistFromStart % 2 == 1 && t.DistFromStart <= 458);
-var rts5 = allTiles.Count(t => t.DistFromStart % 2 == 1 && t.DistFromStart <= 589);
-Console.WriteLine(rts1);
-Console.WriteLine(rts2);
-Console.WriteLine(rts3);
-Console.WriteLine(rts4);
-Console.WriteLine(rts5);
+Fill(map, allTiles, new Coordinate { X = 130, Y = 130 });
+var upleftParity0 = allTiles.Count(t => t.DistFromStart < 65 && t.DistFromStart % 2 == 0);
+var upleftParity1 = allTiles.Count(t => t.DistFromStart < 131 + 65 && t.DistFromStart % 2 == 1);
+Fill(map, allTiles, new Coordinate { X = 0, Y = 130 });
+var uprightParity0 = allTiles.Count(t => t.DistFromStart < 65 && t.DistFromStart % 2 == 0);
+var uprightParity1 = allTiles.Count(t => t.DistFromStart < 131 + 65 && t.DistFromStart % 2 == 1);
 
-//141 vertical
-//145 horizontal
+Fill(map, allTiles, new Coordinate { X = 130, Y = 0 });
+var downleftParity0 = allTiles.Count(t => t.DistFromStart < 65 && t.DistFromStart % 2 == 0);
+var downleftParity1 = allTiles.Count(t => t.DistFromStart < 131 + 65 && t.DistFromStart % 2 == 1);
+Fill(map, allTiles, new Coordinate { X = 0, Y = 0 });
+var downrightParity0 = allTiles.Count(t => t.DistFromStart < 65 && t.DistFromStart % 2 == 0);
+var downrightParity1 = allTiles.Count(t => t.DistFromStart < 131 + 65 && t.DistFromStart % 2 == 1);
+
+long thenum = 26501365 / 131;
+
+decimal ret2 = fullTableParity1 + 
+    up + down + left + right + 
+    thenum * (uprightParity0 + downrightParity0 + downleftParity0 + upleftParity0) +
+    (thenum - 1) * (uprightParity1 + downrightParity1 + downleftParity1 + upleftParity1);
+
+for (decimal i = 1; i < thenum; i++)
+{
+    if(i % 2 == 0)
+    {
+        ret2 += 4 * i * fullTableParity1;
+    }
+    else
+    {
+        ret2 += 4 * i * fullTableParity0;
+    }
+}
 
 Console.ReadLine();
-//3819
-//33664
-//94183
-//183578
-//304691
 
-//3819
-//33769
-//94549
-//184399
-
-long Predict(List<long> nums)
-{
-    var cns = new List<List<long>> { nums };
-    var cn = nums.ToList();
-    while (!cn.All(n => n == 0))
-    {
-        var nl = new List<long>();
-        for (int i = 1; i < cn.Count; i++)
-        {
-            nl.Add(cn[i] - cn[i - 1]);
-        }
-
-        cns.Add(nl);
-        cn = nl;
-    }
-
-    long lastDiff = 0;
-    for (var i = cns.Count - 1; i >= 0; i--)
-    {
-        cns[i].Add(cns[i].Last() + lastDiff);
-        lastDiff = cns[i].Last();
-    }
-    return cns[0].Last();
-
-}
-
-void AddNewPart(long vnum, long hnum, Dictionary<long, Dictionary<long, Item>> map, Dictionary<long, Dictionary<long, Item>> orig)
-{
-    int j = 0;
-    var ymax = orig.Count;
-    var xmax = orig[0].Count;
-    foreach (var line in orig)
-    {
-        var y = vnum * ymax + j;
-        if(!map.ContainsKey(y))
-            map.Add(y, new Dictionary<long, Item>());
-        foreach(var item in line.Value)
-        {
-            var ni = item.Value.Clone();
-            var x = hnum * xmax + ni.Coordinate.X;
-            ni.Coordinate.Y = y;
-            ni.Coordinate.X = x;
-            map[y].Add(x, ni);
-        }
-        j++;
-    }
-}
-
-void Fill(Dictionary<long, Dictionary<long, Item>> map, List<Item> allTiles)
+void Fill(Dictionary<long, Dictionary<long, Item>> map, List<Item> allTiles, Coordinate start)
 {
     HashSet<Item> fullyKnownItems = new HashSet<Item>();
+    //reset
+    foreach(var t in allTiles.Where(t=>t.DistFromStart != null))
+    {
+        t.DistFromStart = null;
+    }
+
+    map[start.Y][start.X].DistFromStart = 0;
 
     while (allTiles.Any(t => t.ValueCh == '.' && t.DistFromStart == null))
     {
